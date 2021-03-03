@@ -1,0 +1,1 @@
+my_trib_bot = '1259530619:AAE0o8QqvPCTze6O5PAq8e10MvwkcaCVuSo'
