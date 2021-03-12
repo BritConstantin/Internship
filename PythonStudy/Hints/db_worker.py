@@ -96,6 +96,8 @@ if __name__ == '__main__':
     my_db.insert_row(table_name, users_hat.keys(), test_row)
     my_db.print_table(table_name)
     extracted_data = my_db.get_all_table_rows(table_name)
+    print("ed> ")
     for s in extracted_data:
-        print("ed> " + s)
+        print( s)
+
     my_db.close_connection()
