@@ -15,6 +15,8 @@ bot.
 """
 
 import logging
+import json.decoder
+from pathlib import Path
 from typing import Dict
 
 from telegram import ReplyKeyboardMarkup, Update
@@ -26,6 +28,8 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
     )
+
+from PythonStudy.Hints.db_worker import DbWorker
 from PythonStudy.bot_info import my_trib_bot, h_bot
 
 # Enable logging
@@ -37,7 +41,7 @@ CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
 reply_keyboard = [
     ['Age', 'Favourite colour'],
     ['Number of siblings', 'Something else...'],
-    ['Done','Debug']
+    ['Done', 'Debug']
     ]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
@@ -58,7 +62,7 @@ def start(update: Update, context: CallbackContext) -> int:
             reply_markup=markup,
             )
     print('Context:')
-    print( context)
+    print(context)
     print('Update:')
     print(update)
 
@@ -116,12 +120,40 @@ def done(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+def save_message_to_db(update: Update, context: CallbackContext, ):
+    user = update.message.from_user
+    print(f'-> catch message {update.message.message_id} '
+          f'from user {user.id}({user.full_name}):')
+    print(update.message)
+
+    db_name = Path(__file__).name[:-3]
+    db = DbWorker(db_name)  # db name created from the file name
+    table_name = 'messages'
+    users_hat = {
+        'message_id': 'integer',
+        'user_id': 'integer',
+        'message': 'string'
+        }
+
+
+    # json.dumps(update.message)
+
+    db = DbWorker(db_name)
+    db.create_table(table_name, users_hat)
+    db.insert_row(table_name, users_hat.keys(),
+                  (update.message.message_id,
+                   user.id,
+                   update.message.to_json()))
+
+
 def main() -> None:
     # Create the Updater and pass it your bot's token.
-    updater = Updater(h_bot)
+    updater = Updater(my_trib_bot)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
+
+    db_save_handler = MessageHandler(Filters.text | Filters.command, save_message_to_db)
 
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     conv_handler = ConversationHandler(
@@ -137,12 +169,13 @@ def main() -> None:
                     ],
                 TYPING_REPLY: [
                     MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Done$')),
-                            received_information,)
+                                   received_information, )
                     ],
                 },
             fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
             )
 
+    dispatcher.add_handler(db_save_handler)
     dispatcher.add_handler(conv_handler)
 
     # Start the Bot

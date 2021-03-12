@@ -3,7 +3,7 @@ from random import randint
 
 
 class DbWorker:
-
+# todo: Add log level to class
     def __init__(self, db_name):
         self.conn = sqlite3.connect(f'{db_name}.db')
         self.db_name = db_name
@@ -19,7 +19,7 @@ class DbWorker:
             sql_command = f"""CREATE TABLE IF NOT EXISTS {table_name} (
                         {cols_str}
                         )"""
-            print(' executing: ' + sql_command)
+            # print(' executing: ' + sql_command)
             c.execute(sql_command)
 
 
@@ -29,7 +29,7 @@ class DbWorker:
     def drop_table(self, table_name):
         c = self.conn.cursor()
         sql_command = f"DROP TABLE {table_name}"
-        print(' executing: ' + sql_command)
+        # print(' executing: ' + sql_command)
         c.execute(sql_command)
 
     # done
