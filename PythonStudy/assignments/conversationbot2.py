@@ -26,14 +26,10 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
     )
+from PythonStudy.bot_info import my_trib_bot, h_bot
 
 # Enable logging
-from PythonStudy.bot_info import my_trib_bot
-
-logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
-        )
-
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
@@ -41,7 +37,7 @@ CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
 reply_keyboard = [
     ['Age', 'Favourite colour'],
     ['Number of siblings', 'Something else...'],
-    ['Done'],
+    ['Done','Debug']
     ]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
@@ -61,6 +57,13 @@ def start(update: Update, context: CallbackContext) -> int:
             "Why don't you tell me something about yourself?",
             reply_markup=markup,
             )
+    print('Context:')
+    print( context)
+    print('Update:')
+    print(update)
+
+    print('User:')
+    print(update['message']['chat'])
 
     return CHOOSING
 
@@ -68,6 +71,7 @@ def start(update: Update, context: CallbackContext) -> int:
 def regular_choice(update: Update, context: CallbackContext) -> int:
     text = update.message.text
     context.user_data['choice'] = text
+
     update.message.reply_text(f'Your {text.lower()}? Yes, I would love to hear about that!')
 
     return TYPING_REPLY
@@ -106,14 +110,15 @@ def done(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
             f"I learned these facts about you: {facts_to_str(user_data)} Until next time!"
             )
-
+    update.message.reply_text(str(user_data))
+    print(context)
     user_data.clear()
     return ConversationHandler.END
 
 
 def main() -> None:
     # Create the Updater and pass it your bot's token.
-    updater = Updater(my_trib_bot)
+    updater = Updater(h_bot)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -123,21 +128,16 @@ def main() -> None:
             entry_points=[CommandHandler('start', start)],
             states={
                 CHOOSING: [
-                    MessageHandler(
-                            Filters.regex('^(Age|Favourite colour|Number of siblings)$'), regular_choice
-                            ),
+                    MessageHandler(Filters.regex('^(Age|Favourite colour|Number of siblings)$'),
+                                   regular_choice),
                     MessageHandler(Filters.regex('^Something else...$'), custom_choice),
                     ],
                 TYPING_CHOICE: [
-                    MessageHandler(
-                            Filters.text & ~(Filters.command | Filters.regex('^Done$')), regular_choice
-                            )
+                    MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Done$')), regular_choice)
                     ],
                 TYPING_REPLY: [
-                    MessageHandler(
-                            Filters.text & ~(Filters.command | Filters.regex('^Done$')),
-                            received_information,
-                            )
+                    MessageHandler(Filters.text & ~(Filters.command | Filters.regex('^Done$')),
+                            received_information,)
                     ],
                 },
             fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
