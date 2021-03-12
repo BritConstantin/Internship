@@ -61,13 +61,13 @@ def start(update: Update, context: CallbackContext) -> int:
             "Why don't you tell me something about yourself?",
             reply_markup=markup,
             )
-    print('Context:')
-    print(context)
-    print('Update:')
-    print(update)
-
-    print('User:')
-    print(update['message']['chat'])
+    # print('Context:')
+    # print(context)
+    # print('Update:')
+    # print(update)
+    #
+    # print('User:')
+    # print(update['message']['chat'])
 
     return CHOOSING
 
@@ -120,7 +120,7 @@ def done(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
-def save_message_to_db(update: Update, context: CallbackContext, ):
+def save_message_to_db(update: Update, context: CallbackContext ):
     user = update.message.from_user
     print(f'-> catch message {update.message.message_id} '
           f'from user {user.id}({user.full_name}):')
@@ -135,9 +135,6 @@ def save_message_to_db(update: Update, context: CallbackContext, ):
         'message': 'string'
         }
 
-
-    # json.dumps(update.message)
-
     db = DbWorker(db_name)
     db.create_table(table_name, users_hat)
     db.insert_row(table_name, users_hat.keys(),
@@ -146,6 +143,29 @@ def save_message_to_db(update: Update, context: CallbackContext, ):
                    update.message.to_json()))
 
 
+def get_db_messages(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    print(f'Here is all messages from db.message :')
+
+    db_name = Path(__file__).name[:-3]
+    db = DbWorker(db_name)  # db name created from the file name
+    table_name = 'messages'
+    users_hat = {
+        'message_id': 'integer',
+        'user_id': 'integer',
+        'message': 'string'
+        }
+
+    db = DbWorker(db_name)
+    table_data = db.get_all_table_rows(table_name)
+
+    for row in table_data:
+        update.message.reply_text(row)
+        print(row)
+
+
+
+ # FIXME: how to add params to the hendlers????
 def main() -> None:
     # Create the Updater and pass it your bot's token.
     updater = Updater(my_trib_bot)
@@ -154,6 +174,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     db_save_handler = MessageHandler(Filters.text | Filters.command, save_message_to_db)
+
 
     # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     conv_handler = ConversationHandler(
@@ -175,8 +196,10 @@ def main() -> None:
             fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
             )
 
-    dispatcher.add_handler(db_save_handler)
+    dispatcher.add_handler(CommandHandler("db_messages", get_db_messages))
+
     dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(db_save_handler)
 
     # Start the Bot
     updater.start_polling()
