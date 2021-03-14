@@ -1,2 +1,3 @@
-my_trib_bot = '1259530619:AAE0o8QqvPCTze6O5PAq8e10MvwkcaCVuSo'
-h_bot = '1367903470:AAH_tqejbIgTqVdvRWxgMshFxBbvkNQwCbs'
+# @conversation_3_0_bot:
+
+conversation_3_0_bot_TOKEN = '1606787467:AAEW8BZ00FCbIKtb8j1trqLFocPaUnaW-OY'
