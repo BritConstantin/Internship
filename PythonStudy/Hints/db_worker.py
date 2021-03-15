@@ -1,13 +1,27 @@
 import sqlite3
 from random import randint
-
+"""
+SqLite supported method:
+    TEXT
+    NUMERIC
+    INTEGER
+    REAL
+    BLOB
+"""
 
 class DbWorker:
 # todo: Add log level to class
+
     def __init__(self, db_name):
         self.conn = sqlite3.connect(f'{db_name}.db')
         self.db_name = db_name
-
+    def exec(self, command):
+        c = self.conn.cursor()
+        try:
+            c.execute(command)
+            self.conn.commit()
+        except sqlite3.OperationalError as e:
+            print(e) # self.create_table.__name__ +
     # done
     def create_table(self, table_name, cols):
         c = self.conn.cursor()
@@ -25,6 +39,15 @@ class DbWorker:
 
         except sqlite3.OperationalError as e:
             print(e) # self.create_table.__name__ +
+    def create_user_data_table(self):
+        self.create_table('main.user_data',
+                        """user_id integer not null primary key ,
+                        first_name text, 
+                        last_name text,
+                        age text,
+                        gender text,    
+                        experience text""")
+
 
     def drop_table(self, table_name):
         c = self.conn.cursor()
