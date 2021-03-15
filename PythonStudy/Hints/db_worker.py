@@ -40,13 +40,16 @@ class DbWorker:
         except sqlite3.OperationalError as e:
             print(e) # self.create_table.__name__ +
     def create_user_data_table(self):
-        self.create_table('main.user_data',
+        try:
+            self.create_table('main.user_data',
                         """user_id integer not null primary key ,
                         first_name text, 
                         last_name text,
                         age text,
                         gender text,    
                         experience text""")
+        except sqlite3.OperationalError as e:
+            print(e) # self.create_table.__name__ +
 
 
     def drop_table(self, table_name):

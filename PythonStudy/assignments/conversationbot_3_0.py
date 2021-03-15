@@ -19,14 +19,13 @@ Users Db contains two tables:
     messages - contain all incoming messages(cols: message_id, user_id, message)
     user_data - contain updated data about user(user_id, first_name, last_name, age, gender, experience) 
 """
-# todo: add new table user_data
+# done: add new table user_data
 # todo: add method that whould filter all messages by user id
 # todo: add method that will insert data in to user_data table
 # todo: add method that will read data for the user wich asked for it
 # todo: add error handling table(save handled exeption with stacktrace
 #       and message that affecte it
 import logging
-import json.decoder
 from pathlib import Path
 from typing import Dict
 
@@ -43,12 +42,12 @@ from telegram.ext import (
 from PythonStudy.Hints.db_worker import DbWorker
 from PythonStudy.bot_info import conversation_3_0_bot_TOKEN
 
-#region Enable logging
+# region Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-#endregion
+# endregion
 
-#region Global variables declaration
+# region Global variables declaration
 db_name = Path(__file__).name[:-3]
 CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
 reply_keyboard = [
@@ -63,8 +62,9 @@ reply_keyboard = [
                       gender text,    
                       experience text"""
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-#endregion
 
+
+# endregion
 
 
 def facts_to_str(user_data: Dict[str, str]) -> str:
@@ -75,7 +75,8 @@ def facts_to_str(user_data: Dict[str, str]) -> str:
 
     return "\n".join(facts).join(['\n', '\n'])
 
-#region     Handlers
+
+# region     Handlers
 def start(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
             "Hi! My name is Doctor Botter. I will hold a more complex conversation with you. "
@@ -139,15 +140,16 @@ def done(update: Update, context: CallbackContext) -> int:
     print(context)
     user_data.clear()
     return ConversationHandler.END
-#endregion
 
-#region DB methods
+
+# endregion
+
+# region DB methods
 def save_message_to_db(update: Update, context: CallbackContext, ):
     user = update.message.from_user
     print(f'-> catch message {update.message.message_id} '
           f'from user {user.id}({user.full_name}):')
     print(update.message)
-
 
     db = DbWorker(db_name)  # db name created from the file name
 
@@ -167,10 +169,12 @@ def save_message_to_db(update: Update, context: CallbackContext, ):
 
 
 def initiate_db():
-    db = DbWorker
+    db = DbWorker(db_name)
     db.create_user_data_table()
     db.close_connection()
-#endregion
+
+
+# endregion
 
 def main() -> None:
     updater = Updater(conversation_3_0_bot_TOKEN)

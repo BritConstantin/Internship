@@ -26,3 +26,7 @@ K
 PythonStudy/Hints/users2.db,4\0\40fb5c3d7dd2d7d33e8738fefa7eee2866f3adeb
 [
 +PythonStudy/assignments/conversationbot2.db,a\5\a5973fcdfad0ec52d8c9c84840ab6c77c11703f2
+^
+.PythonStudy/assignments/conversationbot_3_0.db,c\b\cb486d20d080fdefd5df6e653228afac9c606862
+^
+.PythonStudy/assignments/conversationbot_3_0.py,7\9\793cf055c9314157d67b474201faed8597577f41

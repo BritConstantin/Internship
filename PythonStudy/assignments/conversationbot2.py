@@ -164,8 +164,6 @@ def get_db_messages(update: Update, context: CallbackContext):
         print(row)
 
 
-
- # FIXME: how to add params to the hendlers????
 def main() -> None:
     # Create the Updater and pass it your bot's token.
     updater = Updater(my_trib_bot)
@@ -175,8 +173,6 @@ def main() -> None:
 
     db_save_handler = MessageHandler(Filters.text | Filters.command, save_message_to_db)
 
-
-    # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     conv_handler = ConversationHandler(
             entry_points=[CommandHandler('start', start)],
             states={
@@ -204,9 +200,6 @@ def main() -> None:
     # Start the Bot
     updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
