@@ -149,7 +149,7 @@ def save_message_to_db(update: Update, context: CallbackContext, ):
     user = update.message.from_user
     print(f'-> catch message {update.message.message_id} '
           f'from user {user.id}({user.full_name}):')
-    print(update.message)
+    print('->>' + update.message.text)
 
     db = DbWorker(db_name)  # db name created from the file name
 
