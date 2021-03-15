@@ -21,6 +21,7 @@ class DbWorker:
             c.execute(command)
             self.conn.commit()
         except sqlite3.OperationalError as e:
+            print('Exception in DbWorker.exec()')
             print(e) # self.create_table.__name__ +
     # done
     def create_table(self, table_name, cols):
@@ -39,15 +40,20 @@ class DbWorker:
 
         except sqlite3.OperationalError as e:
             print(e) # self.create_table.__name__ +
+
+
     def create_user_data_table(self):
         try:
-            self.create_table('main.user_data',
-                        """user_id integer not null primary key ,
+            print(">>create_user_data_table")
+            self.exec("""CREATE TABLE IF NOT EXISTS main.user_data ( 
+                        user_id integer not null primary key ,
                         first_name text, 
                         last_name text,
                         age text,
                         gender text,    
-                        experience text""")
+                        experience text)""")
+            self.conn.commit()
+
         except sqlite3.OperationalError as e:
             print(e) # self.create_table.__name__ +
 
@@ -82,7 +88,7 @@ class DbWorker:
             print(self.create_table.__name__)
             print(e)
 
-    # fixme:
+
     def insert_row(self, table_name, column_names, row):
         c = self.conn.cursor()
         try:

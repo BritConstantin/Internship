@@ -177,6 +177,7 @@ def initiate_db():
 # endregion
 
 def main() -> None:
+    initiate_db()
     updater = Updater(conversation_3_0_bot_TOKEN)
 
     dispatcher = updater.dispatcher

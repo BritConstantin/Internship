@@ -1,0 +1,8 @@
+
+kpython:S5799V"GMerge these implicitly concatenated strings; or did you forget a comma?(‘°¸æûÿÿÿÿ8ä²˜¥ƒ/
+lpython:S1854—"GRemove this assignment to local variable 'db'; the value is never used.(ç»‰®øÿÿÿÿ8ä²˜¥ƒ/
+Mpython:S1481™"-Remove the unused local variable "users_hat".(í”ÿÏ8ä²˜¥ƒ/
+lpython:S1854‚"GRemove this assignment to local variable 'db'; the value is never used.(ç»‰®øÿÿÿÿ8ä²˜¥ƒ/
+Mpython:S1481“"(Remove the unused local variable "user".(®ß¡·úÿÿÿÿ8ä²˜¥ƒ/
+Bpython:S125@"Remove this commented out code.(ÕÕ›Âøÿÿÿÿ8ä²˜¥ƒ/
+fpython:S1192¹"GDefine a constant instead of duplicating this literal '^Done$' 3 times.(¤˜08ä²˜¥ƒ/
